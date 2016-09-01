@@ -11,6 +11,7 @@
 <script src="lib/fukuno.js"></script>
 <script src="lib/gmap.js"></script>
 <script src="lib/odp.js"></script>
+<script src="lib/csv.js"></script>
 <script>"use strict";
 
 var DEFAULT_ORG;
@@ -134,7 +135,26 @@ var init = function() {
 	markers = [];
 	bounds = new google.maps.LatLngBounds();
 	
-	showNearest();
+//	showNearest();
+	var url = "https://docs.google.com/spreadsheets/d/1HsyYp1x0XKKPXnQyBNvVJEJE-Zy6bRRdc6M1OkrxgYc/pub?gid=0&single=true&output=csv";
+	getCSV(url, function(csv) {
+		dump(csv);
+		
+		bounds = new google.maps.LatLngBounds();
+		for (var i = 1; i < csv.length; i++) {
+			var it = csv[i];
+			var d = {};
+			d.type = TYPE;
+			for (var j = 0; j < csv[0].length; j++) {
+				d[csv[0][j]] = it[j];
+			}
+			makeMarkerItem(d);
+		}
+		if (data.length > 0)
+			map.fitBounds(bounds);
+		
+//		funcnext();
+	});
 };
 var markers;
 var bounds;
